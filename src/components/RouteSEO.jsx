@@ -1,6 +1,9 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
+const SITE_URL = "https://portfolio-ukae.vercel.app";
+const SOCIAL_IMAGE = `${SITE_URL}/images/ai-projects/research-rag.png`;
+
 const pages = {
   "/": {
     title: "Hamzah Al-Basyouni | AI & Machine Learning Engineer",
@@ -41,7 +44,7 @@ const pages = {
   "/projects/universal-prediction": {
     title: "Universal Prediction System | Hamzah Al-Basyouni",
     description:
-      "An automated machine learning system for classification, regression, and forecasting with data analysis, model training, and prediction workflows.",
+      "An automated machine learning system for classification, regression, forecasting, model training, analysis, and prediction workflows.",
   },
 
   "/projects/financial-analytics": {
@@ -53,7 +56,7 @@ const pages = {
   "/projects/diamond-pricing": {
     title: "Diamond Price Prediction Dashboard | Hamzah Al-Basyouni",
     description:
-      "A machine learning dashboard for diamond price prediction featuring model comparison, feature importance, EDA, and interactive predictions.",
+      "A machine learning dashboard for diamond price prediction featuring model comparison, feature importance, exploratory analysis, and interactive predictions.",
   },
 };
 
@@ -74,22 +77,22 @@ const RouteSEO = () => {
 
   useEffect(() => {
     const page = pages[pathname] ?? pages["/"];
-
-    const canonicalUrl = `${window.location.origin}${pathname}`;
-    const imageUrl = `${window.location.origin}/images/ai-projects/research-rag.png`;
+    const canonicalUrl = `${SITE_URL}${pathname === "/" ? "" : pathname}`;
 
     document.title = page.title;
 
     setMeta("name", "description", page.description);
 
+    setMeta("property", "og:type", "website");
     setMeta("property", "og:title", page.title);
     setMeta("property", "og:description", page.description);
     setMeta("property", "og:url", canonicalUrl);
-    setMeta("property", "og:image", imageUrl);
+    setMeta("property", "og:image", SOCIAL_IMAGE);
 
+    setMeta("name", "twitter:card", "summary_large_image");
     setMeta("name", "twitter:title", page.title);
     setMeta("name", "twitter:description", page.description);
-    setMeta("name", "twitter:image", imageUrl);
+    setMeta("name", "twitter:image", SOCIAL_IMAGE);
 
     let canonical = document.head.querySelector('link[rel="canonical"]');
 

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/about</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/research-rag</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/chest-xray</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/customer-churn</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/universal-prediction</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/financial-analytics</loc>
+  </url>
+
+  <url>
+    <loc>https://portfolio-ukae.vercel.app/projects/diamond-pricing</loc>
+  </url>
+</urlset>
