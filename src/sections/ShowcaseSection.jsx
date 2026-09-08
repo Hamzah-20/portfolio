@@ -86,7 +86,8 @@ const ShowcaseSection = () => {
               <img
                 src="/images/ai-projects/research-rag-740.webp"
                 alt="Neural Research AI research dashboard"
-                loading="lazy"
+                loading="eager"
+                fetchPriority="high"
                 decoding="async"
                 className="w-full h-full object-cover object-top"
               />
