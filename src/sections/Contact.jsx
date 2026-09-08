@@ -1,20 +1,48 @@
-import { useRef, useState } from "react";
-import emailjs from "@emailjs/browser";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import TitleHeader from "../components/TitleHeader";
-import ContactExperience from "../components/models/contact/ContactExperience";
+
+const ContactExperience = lazy(
+  () => import("../components/models/contact/ContactExperience"),
+);
 
 const Contact = () => {
   const formRef = useRef(null);
+  const experienceRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
+  const [loadExperience, setLoadExperience] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
     email: "",
     message: "",
   });
+
+  useEffect(() => {
+    const element = experienceRef.current;
+
+    if (!element) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoadExperience(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "400px 0px",
+      },
+    );
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +60,9 @@ const Contact = () => {
     setStatus("");
 
     try {
-      await emailjs.sendForm(
+      const { sendForm } = await import("@emailjs/browser");
+
+      await sendForm(
         import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
         formRef.current,
@@ -63,7 +93,6 @@ const Contact = () => {
         />
 
         <div className="grid-12-cols mt-16">
-          {/* Contact Form */}
           <div className="xl:col-span-5">
             <div className="flex-center card-border rounded-xl p-10">
               <form
@@ -143,7 +172,6 @@ const Contact = () => {
                   </p>
                 )}
 
-                {/* Direct Email */}
                 <div className="pt-5 border-t border-white/10 text-center">
                   <p className="text-white-50 text-sm">
                     Prefer email directly?
@@ -151,7 +179,7 @@ const Contact = () => {
 
                   <a
                     href="mailto:hamzahalbasyouni@gmail.com"
-                    className="inline-block mt-2  hover:text-cyan-200 transition-colors "
+                    className="inline-block mt-2 hover:text-cyan-200 transition-colors"
                   >
                     hamzahalbasyouni@gmail.com
                   </a>
@@ -160,10 +188,16 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* 3D Contact Experience */}
-          <div className="xl:col-span-7 h-[340px] md:h-[460px] xl:h-auto xl:min-h-96">
+          <div
+            ref={experienceRef}
+            className="xl:col-span-7 h-[340px] md:h-[460px] xl:h-auto xl:min-h-96"
+          >
             <div className="bg-[#cd7c2e] w-full h-full hover:cursor-grab rounded-3xl overflow-hidden">
-              <ContactExperience />
+              {loadExperience && (
+                <Suspense fallback={null}>
+                  <ContactExperience />
+                </Suspense>
+              )}
             </div>
           </div>
         </div>
