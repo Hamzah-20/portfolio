@@ -99,7 +99,7 @@ const Experience = () => {
           title="Professional Work Experience"
           sub="💼 My Career Overview"
         />
-        <div className="mt-32 relative ham xl:translate-x-[270px]">
+        <div className="mt-32 relative experience-content">
           <div className="relative z-50 xl:space-y-32 space-y-10">
             {expCards.map((card) => (
               <div key={card.title} className="exp-card-wrapper">
@@ -113,7 +113,7 @@ const Experience = () => {
                       <div className="gradient-line w-1 h-full" />
                     </div>
                     <div className="expText flex xl:gap-20 md:gap-10 gap-5 relative z-20">
-                      <div className="timeline-logo translate-x-2">
+                      <div className="timeline-logo experience-logo">
                         <a
                           href={card.website}
                           target="_blank"

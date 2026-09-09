@@ -507,3 +507,45 @@ section {
   -webkit-backdrop-filter: blur(3px);
   border: 1px solid rgba(34, 211, 238, 0.18);
 }
+
+.experience-content {
+  position: relative;
+}
+
+@media (min-width: 1280px) and (max-width: 1899px) {
+  .experience-content {
+    transform: translateX(20px);
+  }
+}
+
+@media (min-width: 1900px) {
+  .experience-content {
+    transform: translateX(120px);
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1899px) {
+  .experience-logo {
+    transform: translateX(-1px);
+  }
+}
+
+@media (min-width: 1900px) {
+  .experience-logo {
+    transform: translateX(7px);
+  }
+}
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input,
+textarea,
+select,
+button,
+a,
+.selectable {
+  user-select: text;
+  -webkit-user-select: text;
+}
