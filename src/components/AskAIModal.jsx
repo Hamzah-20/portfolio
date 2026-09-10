@@ -500,33 +500,54 @@ const AskAIModal = ({ isOpen, onClose }) => {
                             </code>
                           ),
 
-                          a: ({ href, children }) => (
-                            <a
-                              href={href}
-                              target={
-                                href?.startsWith("mailto:")
-                                  ? undefined
-                                  : "_blank"
-                              }
-                              rel={
-                                href?.startsWith("mailto:")
-                                  ? undefined
-                                  : "noreferrer"
-                              }
-                              className="
-      selectable
-      text-cyan-300
-      underline
-      decoration-cyan-300/40
-      underline-offset-4
-      break-all
-      transition-colors
-      hover:text-cyan-200
-    "
-                            >
-                              {children}
-                            </a>
-                          ),
+                          a: ({ href, children }) => {
+                            const isContactLink = href === "#contact";
+                            const isEmailLink = href?.startsWith("mailto:");
+
+                            return (
+                              <a
+                                href={href}
+                                target={
+                                  isContactLink || isEmailLink
+                                    ? undefined
+                                    : "_blank"
+                                }
+                                rel={
+                                  isContactLink || isEmailLink
+                                    ? undefined
+                                    : "noreferrer"
+                                }
+                                onClick={(event) => {
+                                  if (!isContactLink) return;
+
+                                  event.preventDefault();
+
+                                  onClose();
+
+                                  window.setTimeout(() => {
+                                    document
+                                      .querySelector("#contact")
+                                      ?.scrollIntoView({
+                                        behavior: "smooth",
+                                        block: "start",
+                                      });
+                                  }, 150);
+                                }}
+                                className="
+        selectable
+        text-cyan-300
+        underline
+        decoration-cyan-300/40
+        underline-offset-4
+        break-all
+        transition-colors
+        hover:text-cyan-200
+      "
+                              >
+                                {children}
+                              </a>
+                            );
+                          },
                         }}
                       >
                         {message.content}
