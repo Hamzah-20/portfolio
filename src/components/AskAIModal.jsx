@@ -17,6 +17,11 @@ const AskAIModal = ({ isOpen, onClose }) => {
   const textareaRef = useRef(null);
   const messagesEndRef = useRef(null);
 
+  const turnstileContainerRef = useRef(null);
+  const turnstileWidgetIdRef = useRef(null);
+
+  const [turnstileToken, setTurnstileToken] = useState("");
+
   useEffect(() => {
     if (!isOpen) return undefined;
 
@@ -57,10 +62,92 @@ const AskAIModal = ({ isOpen, onClose }) => {
     });
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+
+    if (!siteKey) {
+      console.error("Turnstile site key is missing.");
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const renderTurnstile = () => {
+      if (cancelled || !window.turnstile || !turnstileContainerRef.current) {
+        return;
+      }
+
+      if (turnstileWidgetIdRef.current !== null) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+      }
+
+      turnstileWidgetIdRef.current = window.turnstile.render(
+        turnstileContainerRef.current,
+        {
+          sitekey: siteKey,
+          theme: "dark",
+          appearance: "interaction-only",
+          action: "portfolio_ai",
+
+          callback: (token) => {
+            setTurnstileToken(token);
+          },
+
+          "expired-callback": () => {
+            setTurnstileToken("");
+          },
+
+          "error-callback": () => {
+            setTurnstileToken("");
+          },
+        },
+      );
+    };
+
+    if (window.turnstile) {
+      renderTurnstile();
+    } else {
+      let script = document.querySelector(
+        'script[data-turnstile-script="true"]',
+      );
+
+      if (!script) {
+        script = document.createElement("script");
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.dataset.turnstileScript = "true";
+
+        document.head.appendChild(script);
+      }
+
+      script.addEventListener("load", renderTurnstile, {
+        once: true,
+      });
+    }
+
+    return () => {
+      cancelled = true;
+
+      if (window.turnstile && turnstileWidgetIdRef.current !== null) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+    };
+  }, [isOpen]);
+
   const sendMessage = async (question = input) => {
     const cleanMessage = question.trim();
 
     if (!cleanMessage || isLoading) return;
+
+    if (!turnstileToken) {
+      setError("Security verification is still loading. Please try again.");
+      return;
+    }
 
     const history = messages.map((message) => ({
       role: message.role,
@@ -86,6 +173,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
         body: JSON.stringify({
           message: cleanMessage,
           history,
+          turnstileToken,
         }),
       });
 
@@ -108,6 +196,11 @@ const AskAIModal = ({ isOpen, onClose }) => {
       setError("I couldn't generate a response right now. Please try again.");
     } finally {
       setIsLoading(false);
+      setTurnstileToken("");
+
+      if (window.turnstile && turnstileWidgetIdRef.current !== null) {
+        window.turnstile.reset(turnstileWidgetIdRef.current);
+      }
     }
   };
 
@@ -564,6 +657,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
               </span>
             </button>
           </form>
+          <div ref={turnstileContainerRef} className="flex justify-center" />
 
           <p className="mt-3 text-center text-[11px] text-white-50">
             Enter to send · Shift + Enter for a new line

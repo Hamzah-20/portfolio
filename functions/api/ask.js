@@ -178,11 +178,57 @@ FOLLOW-UP BEHAVIOR
 - If the user asks for more detail, expand only on the relevant topic.
 `;
 
+const TURNSTILE_VERIFY_URL =
+  "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+
+const EXPECTED_TURNSTILE_HOSTNAME = "portfolio-ypk.pages.dev";
+const EXPECTED_TURNSTILE_ACTION = "portfolio_ai";
+
+const verifyTurnstile = async ({ token, secret, ip }) => {
+  if (!secret || typeof token !== "string" || !token || token.length > 2048) {
+    return false;
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append("secret", secret);
+    formData.append("response", token);
+
+    if (ip) {
+      formData.append("remoteip", ip);
+    }
+
+    const response = await fetch(TURNSTILE_VERIFY_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const result = await response.json();
+
+    return (
+      result.success === true &&
+      result.hostname === EXPECTED_TURNSTILE_HOSTNAME &&
+      result.action === EXPECTED_TURNSTILE_ACTION
+    );
+  } catch (error) {
+    console.error("Turnstile verification error:", error);
+    return false;
+  }
+};
+
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
 
     const message = typeof body.message === "string" ? body.message.trim() : "";
+
+    const turnstileToken =
+      typeof body.turnstileToken === "string" ? body.turnstileToken : "";
 
     if (!message) {
       return Response.json(
@@ -193,6 +239,25 @@ export async function onRequestPost(context) {
 
     if (message.length > 1500) {
       return Response.json({ error: "Message is too long." }, { status: 400 });
+    }
+
+    const visitorIp = context.request.headers.get("CF-Connecting-IP");
+
+    const isHuman = await verifyTurnstile({
+      token: turnstileToken,
+      secret: context.env.TURNSTILE_SECRET_KEY,
+      ip: visitorIp,
+    });
+
+    if (!isHuman) {
+      return Response.json(
+        {
+          error: "Security verification failed. Please refresh and try again.",
+        },
+        {
+          status: 403,
+        },
+      );
     }
 
     const history = Array.isArray(body.history)
