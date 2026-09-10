@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const SITE_URL = "https://portfolio-ukae.vercel.app";
+const SITE_URL = "https://portfolio-ypk.pages.dev";
 const SOCIAL_IMAGE = `${SITE_URL}/images/ai-projects/research-rag.png`;
 
 const pages = {
