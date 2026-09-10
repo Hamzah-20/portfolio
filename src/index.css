@@ -733,3 +733,16 @@ a,
   width: 0;
   height: 0;
 }
+
+.ask-ai-message-content {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+.ask-ai-message-content[dir="rtl"] {
+  text-align: right;
+}
+
+.ask-ai-message-content[dir="ltr"] {
+  text-align: left;
+}

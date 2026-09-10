@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
+const containsArabic = (text) =>
+  /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(text);
+
 const suggestedQuestions = [
   "What AI projects has Hamzah built?",
   "Does Hamzah have RAG experience?",
@@ -403,6 +406,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
           <div className="mt-7 space-y-5">
             {messages.map((message, index) => {
               const isUser = message.role === "user";
+              const isArabic = containsArabic(message.content);
 
               return (
                 <div
@@ -428,28 +432,31 @@ const AskAIModal = ({ isOpen, onClose }) => {
                   )}
 
                   <div
+                    dir={isArabic ? "rtl" : "ltr"}
+                    lang={isArabic ? "ar" : "en"}
                     className={`
-                      selectable
-                      max-w-[85%]
-                      whitespace-pre-wrap
-                      rounded-2xl
-                      px-5 py-4
-                      leading-relaxed
-                      ${
-                        isUser
-                          ? `
+                        selectable
+                        ask-ai-message-content
+                        max-w-[85%]
+                        whitespace-pre-wrap
+                        rounded-2xl
+                        px-5 py-4
+                        leading-relaxed
+                        ${
+                          isUser
+                            ? `
                             rounded-tr-sm
                             border border-cyan-300/20
                             bg-cyan-300/[0.08]
                             text-white
-                          `
-                          : `
+                            `
+                            : `
                             rounded-tl-sm
                             border border-white/10
                             bg-white/[0.035]
                             text-white-50
-                          `
-                      }
+                            `
+                        }
                     `}
                   >
                     {isUser ? (
@@ -458,7 +465,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
                       <ReactMarkdown
                         components={{
                           p: ({ children }) => (
-                            <p className="mb-3 last:mb-0 leading-relaxed">
+                            <p className="mb-3 last:mb-0 leading-relaxed text-start">
                               {children}
                             </p>
                           ),
@@ -470,13 +477,13 @@ const AskAIModal = ({ isOpen, onClose }) => {
                           ),
 
                           ul: ({ children }) => (
-                            <ul className="my-3 space-y-2 list-disc pl-5">
+                            <ul className="my-3 space-y-2 list-disc ps-5 text-start">
                               {children}
                             </ul>
                           ),
 
                           ol: ({ children }) => (
-                            <ol className="my-3 space-y-3 list-decimal pl-5">
+                            <ol className="my-3 space-y-3 list-decimal ps-5 text-start">
                               {children}
                             </ol>
                           ),
