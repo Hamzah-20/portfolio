@@ -93,6 +93,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
 
           callback: (token) => {
             setTurnstileToken(token);
+            setError("");
           },
 
           "expired-callback": () => {
@@ -144,10 +145,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
 
     if (!cleanMessage || isLoading) return;
 
-    if (!turnstileToken) {
-      setError("Security verification is still loading. Please try again.");
-      return;
-    }
+    if (!turnstileToken) return;
 
     const history = messages.map((message) => ({
       role: message.role,
@@ -290,12 +288,16 @@ const AskAIModal = ({ isOpen, onClose }) => {
                 </h2>
 
                 <span
-                  className="
+                  className={`
                     size-2
                     rounded-full
-                    bg-emerald-400
-                    shadow-[0_0_10px_rgba(74,222,128,0.8)]
-                  "
+                    transition-all duration-300
+                    ${
+                      turnstileToken
+                        ? "bg-emerald-400 shadow-[0_0_10px_rgba(74,222,128,0.8)]"
+                        : "bg-amber-300 shadow-[0_0_10px_rgba(252,211,77,0.6)] animate-pulse"
+                    }
+                `}
                 />
               </div>
 
@@ -373,8 +375,11 @@ const AskAIModal = ({ isOpen, onClose }) => {
                   <button
                     key={question}
                     type="button"
+                    disabled={!turnstileToken || isLoading}
                     onClick={() => sendMessage(question)}
                     className="
+                      disabled:opacity-50
+                      disabled:cursor-wait
                       text-left
                       rounded-xl
                       border border-white/10
@@ -600,7 +605,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
 
             <button
               type="submit"
-              disabled={!input.trim() || isLoading}
+              disabled={!input.trim() || isLoading || !turnstileToken}
               aria-label="Send message"
               className="
                 ask-ai-send
