@@ -501,7 +501,10 @@ const AskAIModal = ({ isOpen, onClose }) => {
                           ),
 
                           a: ({ href, children }) => {
-                            const isContactLink = href === "#contact";
+                            const isContactLink =
+                              href === "#contact" ||
+                              href?.endsWith("/#contact") ||
+                              href?.endsWith("#contact");
                             const isEmailLink = href?.startsWith("mailto:");
 
                             return (
