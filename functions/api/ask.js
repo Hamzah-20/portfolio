@@ -255,7 +255,7 @@ const verifyTurnstile = async ({ token, secret, ip }) => {
 
 const RATE_LIMITS = {
   minute: {
-    limit: 10,
+    limit: 2,
     windowMs: 60 * 1000,
     ttl: 120,
   },
