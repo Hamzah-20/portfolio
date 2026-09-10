@@ -248,8 +248,6 @@ Use these exact links:
 - Email: [hamzahalbasyouni@gmail.com](mailto:hamzahalbasyouni@gmail.com)
 - GitHub: [github.com/Hamzah-20](https://github.com/Hamzah-20)
 - LinkedIn: [linkedin.com/in/hamzah-al-basyouni-967122369](https://www.linkedin.com/in/hamzah-al-basyouni-967122369/)
-- Portfolio Contact section: [Contact Hamzah](#contact)
-
 - When answering in Arabic, the surrounding explanation should be Arabic, but keep "GitHub" and "LinkedIn" in English.
 - Always mention the Contact section when the user asks how to contact Hamzah.
 
