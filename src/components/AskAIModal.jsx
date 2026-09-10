@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const containsArabic = (text) =>
   /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(text);
@@ -463,6 +464,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
                       message.content
                     ) : (
                       <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
                         components={{
                           p: ({ children }) => (
                             <p className="mb-3 last:mb-0 leading-relaxed text-start">
@@ -501,9 +503,26 @@ const AskAIModal = ({ isOpen, onClose }) => {
                           a: ({ href, children }) => (
                             <a
                               href={href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-cyan-300 underline underline-offset-4 hover:text-cyan-200"
+                              target={
+                                href?.startsWith("mailto:")
+                                  ? undefined
+                                  : "_blank"
+                              }
+                              rel={
+                                href?.startsWith("mailto:")
+                                  ? undefined
+                                  : "noreferrer"
+                              }
+                              className="
+      selectable
+      text-cyan-300
+      underline
+      decoration-cyan-300/40
+      underline-offset-4
+      break-all
+      transition-colors
+      hover:text-cyan-200
+    "
                             >
                               {children}
                             </a>
