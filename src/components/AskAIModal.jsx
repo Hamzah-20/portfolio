@@ -195,7 +195,11 @@ const AskAIModal = ({ isOpen, onClose }) => {
     } catch (requestError) {
       console.error("Ask AI request failed:", requestError);
 
-      setError("I couldn't generate a response right now. Please try again.");
+      setError(
+        requestError instanceof Error
+          ? requestError.message
+          : "I couldn't generate a response right now. Please try again.",
+      );
     } finally {
       setIsLoading(false);
       setTurnstileToken("");
