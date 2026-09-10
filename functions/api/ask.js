@@ -241,6 +241,66 @@ const verifyTurnstile = async ({ token, secret, ip }) => {
   }
 };
 
+const RATE_LIMITS = {
+  minute: {
+    limit: 10,
+    windowMs: 60 * 1000,
+    ttl: 120,
+  },
+  day: {
+    limit: 50,
+    windowMs: 24 * 60 * 60 * 1000,
+    ttl: 90000,
+  },
+};
+
+const checkRateLimit = async (kv, ip) => {
+  const now = Date.now();
+
+  const minuteBucket = Math.floor(now / RATE_LIMITS.minute.windowMs);
+
+  const dayBucket = Math.floor(now / RATE_LIMITS.day.windowMs);
+
+  const minuteKey = `ai:minute:${ip}:${minuteBucket}`;
+  const dayKey = `ai:day:${ip}:${dayBucket}`;
+
+  const [minuteValue, dayValue] = await Promise.all([
+    kv.get(minuteKey),
+    kv.get(dayKey),
+  ]);
+
+  const minuteCount = Number(minuteValue || 0);
+  const dayCount = Number(dayValue || 0);
+
+  if (minuteCount >= RATE_LIMITS.minute.limit) {
+    return {
+      allowed: false,
+      type: "minute",
+    };
+  }
+
+  if (dayCount >= RATE_LIMITS.day.limit) {
+    return {
+      allowed: false,
+      type: "day",
+    };
+  }
+
+  await Promise.all([
+    kv.put(minuteKey, String(minuteCount + 1), {
+      expirationTtl: RATE_LIMITS.minute.ttl,
+    }),
+
+    kv.put(dayKey, String(dayCount + 1), {
+      expirationTtl: RATE_LIMITS.day.ttl,
+    }),
+  ]);
+
+  return {
+    allowed: true,
+  };
+};
+
 export async function onRequestPost(context) {
   try {
     const body = await context.request.json();
@@ -276,6 +336,42 @@ export async function onRequestPost(context) {
         },
         {
           status: 403,
+        },
+      );
+    }
+
+    if (!context.env.RATE_LIMIT) {
+      throw new Error("RATE_LIMIT KV binding is missing.");
+    }
+
+    const rateLimit = await checkRateLimit(
+      context.env.RATE_LIMIT,
+      visitorIp || "unknown",
+    );
+
+    if (!rateLimit.allowed) {
+      const isArabic = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(
+        message,
+      );
+
+      const errorMessage =
+        rateLimit.type === "minute"
+          ? isArabic
+            ? "تم إرسال عدد كبير من الأسئلة بسرعة. انتظر دقيقة ثم حاول مرة أخرى."
+            : "Too many questions were sent too quickly. Please wait a minute and try again."
+          : isArabic
+            ? "تم الوصول إلى الحد اليومي لأسئلة المساعد. يمكنك المحاولة مرة أخرى غدًا."
+            : "The daily AI question limit has been reached. Please try again tomorrow.";
+
+      return Response.json(
+        {
+          error: errorMessage,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": rateLimit.type === "minute" ? "60" : "3600",
+          },
         },
       );
     }
