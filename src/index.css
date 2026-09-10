@@ -746,3 +746,123 @@ a,
 .ask-ai-message-content[dir="ltr"] {
   text-align: left;
 }
+
+.floating-ai-orb {
+  filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.18));
+}
+
+.floating-ai-core {
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      rgba(103, 232, 249, 0.2),
+      transparent 45%
+    ),
+    #050505;
+
+  box-shadow:
+    inset 0 0 18px rgba(34, 211, 238, 0.1),
+    0 0 30px rgba(34, 211, 238, 0.12);
+}
+
+.floating-ai-ring {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.floating-ai-ring-one {
+  inset: 0;
+  border: 1px solid rgba(103, 232, 249, 0.28);
+  animation: floatingAIRotate 7s linear infinite;
+}
+
+.floating-ai-ring-one::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(103, 232, 249);
+  box-shadow: 0 0 14px rgba(103, 232, 249, 0.9);
+}
+
+.floating-ai-ring-two {
+  inset: 7px;
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  animation: floatingAIRotateReverse 10s linear infinite;
+}
+
+.floating-ai-ring-two::before {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgb(192, 132, 252);
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.8);
+}
+
+.floating-ai-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(103, 232, 249, 0.9);
+  box-shadow: 0 0 10px rgba(103, 232, 249, 0.9);
+}
+
+.floating-ai-particle-one {
+  top: 2px;
+  right: 5px;
+  animation: floatingAIPulse 2s ease-in-out infinite;
+}
+
+.floating-ai-particle-two {
+  bottom: 4px;
+  left: 5px;
+  animation: floatingAIPulse 2s 0.7s ease-in-out infinite;
+}
+
+.floating-ai-button:hover .floating-ai-core {
+  box-shadow:
+    inset 0 0 24px rgba(34, 211, 238, 0.18),
+    0 0 45px rgba(34, 211, 238, 0.3);
+}
+
+@keyframes floatingAIRotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floatingAIRotateReverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes floatingAIPulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-ai-ring-one,
+  .floating-ai-ring-two,
+  .floating-ai-particle {
+    animation: none;
+  }
+}

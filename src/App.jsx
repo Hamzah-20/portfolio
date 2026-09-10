@@ -1,8 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import ScrollToTop from "./components/ScrollToTop";
 import RouteSEO from "./components/RouteSEO";
+import AskAIModal from "./components/AskAIModal";
+import FloatingAIButton from "./components/FloatingAIButton";
 
 const Home = lazy(() => import("./pages/Home"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -20,39 +22,58 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => (
-  <>
-    <ScrollToTop />
-    <RouteSEO />
+const App = () => {
+  const [isAIOpen, setIsAIOpen] = useState(false);
 
-    <Suspense fallback={<PageLoader />}>
-      <Routes>
-        <Route path="/" element={<Home />} />
+  const openAI = () => {
+    setIsAIOpen(true);
+  };
 
-        <Route path="/projects" element={<Projects />} />
+  const closeAI = () => {
+    setIsAIOpen(false);
+  };
 
-        <Route path="/projects/research-rag" element={<ResearchRag />} />
+  return (
+    <>
+      <ScrollToTop />
+      <RouteSEO />
 
-        <Route path="/projects/chest-xray" element={<ChestXRay />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Home onOpenAI={openAI} />} />
 
-        <Route path="/projects/customer-churn" element={<CustomerChurn />} />
+          <Route path="/projects" element={<Projects />} />
 
-        <Route
-          path="/projects/universal-prediction"
-          element={<UniversalPrediction />}
-        />
+          <Route path="/projects/research-rag" element={<ResearchRag />} />
 
-        <Route
-          path="/projects/financial-analytics"
-          element={<FinancialAnalytics />}
-        />
+          <Route path="/projects/chest-xray" element={<ChestXRay />} />
 
-        <Route path="/projects/diamond-pricing" element={<DiamondPricing />} />
+          <Route path="/projects/customer-churn" element={<CustomerChurn />} />
 
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </Suspense>
-  </>
-);
+          <Route
+            path="/projects/universal-prediction"
+            element={<UniversalPrediction />}
+          />
+
+          <Route
+            path="/projects/financial-analytics"
+            element={<FinancialAnalytics />}
+          />
+
+          <Route
+            path="/projects/diamond-pricing"
+            element={<DiamondPricing />}
+          />
+
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </Suspense>
+
+      <FloatingAIButton onClick={openAI} isOpen={isAIOpen} />
+
+      <AskAIModal isOpen={isAIOpen} onClose={closeAI} />
+    </>
+  );
+};
 
 export default App;

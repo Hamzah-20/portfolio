@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useNavigate } from "react-router-dom";
 
 const containsArabic = (text) =>
   /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/.test(text);
@@ -13,6 +14,7 @@ const suggestedQuestions = [
 ];
 
 const AskAIModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -505,39 +507,33 @@ const AskAIModal = ({ isOpen, onClose }) => {
                           ),
 
                           a: ({ href, children }) => {
-                            const isContactLink =
-                              href === "#contact" ||
-                              href?.endsWith("/#contact") ||
-                              href?.endsWith("#contact");
+                            const isInternalLink =
+                              href?.startsWith("/") || href?.startsWith("#");
+
                             const isEmailLink = href?.startsWith("mailto:");
 
                             return (
                               <a
                                 href={href}
                                 target={
-                                  isContactLink || isEmailLink
+                                  isInternalLink || isEmailLink
                                     ? undefined
                                     : "_blank"
                                 }
                                 rel={
-                                  isContactLink || isEmailLink
+                                  isInternalLink || isEmailLink
                                     ? undefined
                                     : "noreferrer"
                                 }
                                 onClick={(event) => {
-                                  if (!isContactLink) return;
+                                  if (!isInternalLink) return;
 
                                   event.preventDefault();
 
                                   onClose();
 
                                   window.setTimeout(() => {
-                                    document
-                                      .querySelector("#contact")
-                                      ?.scrollIntoView({
-                                        behavior: "smooth",
-                                        block: "start",
-                                      });
+                                    navigate(href);
                                   }, 150);
                                 }}
                                 className="

@@ -3,7 +3,6 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 import AskAIButton from "../components/AskAIButton";
-import AskAIModal from "../components/AskAIModal";
 import Button from "../components/Button";
 import { words } from "../constants";
 
@@ -11,8 +10,7 @@ const HeroExperience = lazy(
   () => import("../components/models/hero_models/HeroExperience"),
 );
 
-const Hero = () => {
-  const [isAIOpen, setIsAIOpen] = useState(false);
+const Hero = ({ onOpenAI }) => {
   const [show3D, setShow3D] = useState(() => {
     if (typeof window === "undefined") return false;
 
@@ -133,7 +131,7 @@ const Hero = () => {
                 targetId="work"
               />
 
-              <AskAIButton onClick={() => setIsAIOpen(true)} />
+              <AskAIButton onClick={onOpenAI} />
             </div>
           </div>
         </header>
@@ -148,7 +146,6 @@ const Hero = () => {
           </div>
         </figure>
       </div>
-      <AskAIModal isOpen={isAIOpen} onClose={() => setIsAIOpen(false)} />
     </section>
   );
 };

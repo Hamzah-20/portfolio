@@ -74,27 +74,40 @@ const About = () => {
 
         {/* ================= EXPERIENCE ================= */}
 
-        <Experience />
+        <div id="about-experience" className="scroll-mt-28">
+          <Experience />
+        </div>
 
         {/* ================= EDUCATION ================= */}
 
-        <Education />
+        <div id="about-education" className="scroll-mt-28">
+          <Education />
+        </div>
 
         {/* ================= CERTIFICATIONS ================= */}
-        <Certifications />
+
+        <div id="about-certifications" className="scroll-mt-28">
+          <Certifications />
+        </div>
 
         {/* ================= LANGUAGES ================= */}
 
-        <Languages />
+        <div id="about-languages" className="scroll-mt-28">
+          <Languages />
+        </div>
 
         {/* ================= TECH STACK ================= */}
 
-        <TechStack />
+        <div id="about-skills" className="scroll-mt-28">
+          <TechStack />
+        </div>
 
         {/* ================= CV CTA ================= */}
 
         <section
+          id="about-resume"
           className="
+            scroll-mt-28
             px-6 md:px-12 lg:px-16
             py-20
           "

@@ -61,8 +61,8 @@ const ScrollToTopProgress = () => {
         fixed
         right-5
         md:right-8
-        bottom-5
-        md:bottom-8
+        bottom-24
+        md:bottom-28
         z-[200]
         w-14
         h-14
