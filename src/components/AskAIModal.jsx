@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 const suggestedQuestions = [
   "What AI projects has Hamzah built?",
@@ -232,7 +233,7 @@ const AskAIModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-5 md:px-7 py-6">
+        <div className="ask-ai-messages flex-1 overflow-y-auto px-5 md:px-7 py-6">
           <div className="flex gap-3 md:gap-4">
             <div
               className="
@@ -353,7 +354,60 @@ const AskAIModal = ({ isOpen, onClose }) => {
                       }
                     `}
                   >
-                    {message.content}
+                    {isUser ? (
+                      message.content
+                    ) : (
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => (
+                            <p className="mb-3 last:mb-0 leading-relaxed">
+                              {children}
+                            </p>
+                          ),
+
+                          strong: ({ children }) => (
+                            <strong className="font-semibold text-white">
+                              {children}
+                            </strong>
+                          ),
+
+                          ul: ({ children }) => (
+                            <ul className="my-3 space-y-2 list-disc pl-5">
+                              {children}
+                            </ul>
+                          ),
+
+                          ol: ({ children }) => (
+                            <ol className="my-3 space-y-3 list-decimal pl-5">
+                              {children}
+                            </ol>
+                          ),
+
+                          li: ({ children }) => (
+                            <li className="pl-1 leading-relaxed">{children}</li>
+                          ),
+
+                          code: ({ children }) => (
+                            <code className="rounded-md border border-cyan-300/10 bg-cyan-300/[0.06] px-1.5 py-0.5 text-sm text-cyan-200">
+                              {children}
+                            </code>
+                          ),
+
+                          a: ({ href, children }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-cyan-300 underline underline-offset-4 hover:text-cyan-200"
+                            >
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                    )}
                   </div>
                 </div>
               );

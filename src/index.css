@@ -696,3 +696,40 @@ a,
     transform: translateY(-4px);
   }
 }
+
+.ask-ai-messages {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(103, 232, 249, 0.35) transparent;
+  scrollbar-gutter: stable;
+}
+
+.ask-ai-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ask-ai-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ask-ai-messages::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    rgba(103, 232, 249, 0.55),
+    rgba(192, 132, 252, 0.4)
+  );
+  border-radius: 999px;
+}
+
+.ask-ai-messages::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(103, 232, 249, 0.85),
+    rgba(192, 132, 252, 0.7)
+  );
+}
+
+.ask-ai-messages::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
